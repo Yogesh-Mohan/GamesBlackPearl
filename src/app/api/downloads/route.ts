@@ -3,6 +3,8 @@ import { adminDb } from '../../../firebase/admin';
 
 export async function POST(request: Request) {
   try {
+    if (!adminDb) return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
+
     const body = await request.json();
     const { userId, gameId, version, platform } = body;
 

@@ -4,6 +4,8 @@ import { withAuth } from '../../../firebase/middleware';
 
 const handler = async (request: Request, uid: string) => {
   try {
+    if (!adminDb) return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
+
     const body = await request.json();
     const { pollId, optionId } = body;
 

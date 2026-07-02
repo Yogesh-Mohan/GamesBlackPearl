@@ -22,6 +22,10 @@ export const withAuth = (handler: AuthenticatedHandler) => {
 
       const idToken = authHeader.split('Bearer ')[1];
       
+      if (!adminAuth) {
+        return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
+      }
+
       // Cryptographically verify the Firebase ID token
       const decodedToken = await adminAuth.verifyIdToken(idToken);
       const uid = decodedToken.uid;
