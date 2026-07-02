@@ -1,0 +1,109 @@
+/* Advanced Premium Styling for Contact Page */
+
+.contact-page-wrapper {
+  position: relative;
+  background-color: #050508;
+  overflow: hidden;
+}
+
+/* Atmospheric ambient glow */
+.ambient-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.top-glow {
+  top: -200px;
+  right: -100px;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, rgba(0, 229, 255, 0) 70%);
+}
+
+.bottom-glow {
+  bottom: -200px;
+  left: -200px;
+  background: radial-gradient(circle, rgba(181, 0, 255, 0.05) 0%, rgba(181, 0, 255, 0) 70%);
+}
+
+/* Premium Panel */
+.premium-panel {
+  background: rgba(15, 15, 20, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Input Fields */
+.premium-input {
+  width: 100%;
+  background: rgba(10, 10, 14, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px 20px 14px 48px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.premium-input::placeholder {
+  color: #5a5a6e;
+}
+
+.premium-input:focus {
+  outline: none;
+  border-color: rgba(0, 229, 255, 0.4);
+  background: rgba(15, 15, 20, 0.9);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Cyberpunk Submit Button */
+.premium-submit-btn {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(90deg, #00b8cc 0%, #00e5ff 100%);
+  color: #050508;
+  font-family: var(--font-heading), 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  border: none;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0, 229, 255, 0.2);
+}
+
+.premium-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
+.premium-submit-btn .btn-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: skewX(-20deg);
+  transition: all 0.5s ease;
+  z-index: 5;
+}
+
+.premium-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(0, 229, 255, 0.3);
+}
+
+.premium-submit-btn:hover:not(:disabled) .btn-glow {
+  left: 200%;
+}

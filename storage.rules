@@ -1,0 +1,64 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    function isAdmin() {
+      // Storage rules cannot directly query Firestore natively without custom claims.
+      // Assuming Admin SDK will set a custom claim `admin: true` on the auth token.
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    // 1. Public Content Delivery Network (CDN) Folders
+    match /games/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /trailers/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /screenshots/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /wallpapers/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /gallery/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 2. User Generated Content Folders
+    match /bugs/{userId}/{allPaths=**} {
+      // Admins can read all bugs. Users can only read their own bug uploads.
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      
+      // Strict upload validation
+      allow create: if request.auth != null && request.auth.uid == userId
+                    // Limit file size to 50MB
+                    && request.resource.size < 50 * 1024 * 1024 
+                    // Limit to specific image and video types
+                    && (request.resource.contentType.matches('image/.*') || 
+                        request.resource.contentType.matches('video/mp4') || 
+                        request.resource.contentType.matches('video/webm'));
+                        
+      allow delete: if isAdmin();
+      allow update: if false; // Uploads cannot be updated, only replaced
+    }
+    
+    // 3. User Profiles
+    match /profiles/{userId} {
+      allow read: if true;
+      // Limit avatar size to 5MB, images only
+      allow write: if request.auth != null && request.auth.uid == userId
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+  }
+}

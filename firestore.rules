@@ -1,0 +1,83 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Function to check if user is admin
+    // Note: We read the user's role from the /users collection
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // 1. Users Collection
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      // Create is handled by backend Cloud Functions upon signup.
+      allow create: if false; 
+      allow update: if isAuthenticated() && (request.auth.uid == userId);
+      allow delete: if isAdmin();
+    }
+
+    // 2. Public Read / Admin Write Collections
+    match /games/{gameId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /updates/{updateId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /polls/{pollId} {
+      allow read: if true;
+      allow write: if isAdmin();
+      
+      // Subcollection for Votes (Duplicate voting protection)
+      match /votes/{userId} {
+        allow read: if isAuthenticated();
+        // A user can ONLY create a vote document if the document ID exactly matches their UID
+        allow create: if isAuthenticated() && request.auth.uid == userId;
+        allow update, delete: if false; // Votes cannot be changed once cast
+      }
+    }
+    
+    match /media/{mediaId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 3. User Generated Content (Reviews & Bug Reports)
+    match /reviews/{reviewId} {
+      allow read: if true;
+      // Note: Reviews are created via the Next.js API Route using the Admin SDK, 
+      // so we can deny direct client creation to force requests through the API rate-limiter.
+      allow create: if false;
+      allow update, delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    match /bugReports/{bugId} {
+      // Users can only read their own bugs. Admins can read all.
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      // Creation forced through Next.js API Route for validation
+      allow create: if false;
+      allow update, delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    // 4. Append-Only Logs / Private Collections
+    match /downloads/{downloadId} {
+      allow read, write: if false; // Handled entirely via Next.js Backend API
+    }
+    
+    match /contacts/{contactId} {
+      allow read, update, delete: if isAdmin();
+      allow create: if false; // Handled entirely via Next.js Backend API
+    }
+  }
+}
