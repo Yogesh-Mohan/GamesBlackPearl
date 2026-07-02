@@ -3,7 +3,6 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 import { getStorage } from 'firebase-admin/storage';
 import path from 'path';
-
 import fs from 'fs';
 
 let credential;
@@ -23,12 +22,11 @@ try {
     } else if (fs.existsSync(localPath)) {
       credential = cert(localPath);
     } else {
-      console.warn('Firebase Admin credentials not found. Using mock credentials for build phase.');
-      credential = cert({ projectId: "black-pearl-games-b0384", clientEmail: "mock@mock.com", privateKey: "-----BEGIN PRIVATE KEY-----\nMOCK\n-----END PRIVATE KEY-----\n" });
+      console.warn('Firebase Admin credentials not found. Skipping initialization during build phase.');
     }
   }
 } catch (error) {
-  console.warn('Error loading Firebase Admin credentials during build:', error);
+  console.warn('Error loading Firebase Admin credentials:', error.message);
 }
 
 const app = getApps().length === 0 && credential
@@ -38,8 +36,8 @@ const app = getApps().length === 0 && credential
     }) 
   : getApps()[0];
 
-export const adminDb = getFirestore(app);
-export const adminAuth = getAuth(app);
-export const adminStorage = getStorage(app);
+export const adminDb = app ? getFirestore(app) : null;
+export const adminAuth = app ? getAuth(app) : null;
+export const adminStorage = app ? getStorage(app) : null;
 
 export default app;
