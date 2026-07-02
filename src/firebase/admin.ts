@@ -26,7 +26,7 @@ try {
     }
   }
 } catch (error) {
-  console.warn('Error loading Firebase Admin credentials:', error.message);
+  console.warn('Error loading Firebase Admin credentials:', error instanceof Error ? error.message : String(error));
 }
 
 const app = getApps().length === 0 && credential
