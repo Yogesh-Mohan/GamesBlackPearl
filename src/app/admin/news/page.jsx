@@ -74,6 +74,14 @@ export default function AdminNewsPage() {
                 </td>
               </tr>
             ))}
+
+            {news.length === 0 && (
+              <tr>
+                <td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+                  No articles published yet. Click "Compose Article" to create one.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

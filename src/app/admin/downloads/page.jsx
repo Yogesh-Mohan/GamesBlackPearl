@@ -78,6 +78,14 @@ export default function AdminDownloadsPage() {
                 </td>
               </tr>
             ))}
+
+            {downloads.length === 0 && (
+              <tr>
+                <td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+                  No download builds uploaded yet. Click "Upload New Build" to add one.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

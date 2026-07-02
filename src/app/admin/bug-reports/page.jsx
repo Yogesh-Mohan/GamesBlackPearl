@@ -101,6 +101,14 @@ export default function AdminBugReportsPage() {
                 </td>
               </tr>
             ))}
+
+            {bugs.length === 0 && (
+              <tr>
+                <td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+                  No bug reports submitted yet.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

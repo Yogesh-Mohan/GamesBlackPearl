@@ -7,12 +7,13 @@ import {
   Bug, 
   Gamepad2, 
   BarChart2, 
-  Mail, 
   Activity,
-  PlusCircle
+  PlusCircle,
+  ArrowRight
 } from 'lucide-react';
+import Link from 'next/link';
 import { useAuth } from '../../context/AuthContext';
-import '../../pages/Home.css'; // Import the main CSS to use its classes
+import '../../pages/Home.css';
 
 export default function AdminDashboardOverview() {
   const { user } = useAuth();
@@ -24,6 +25,14 @@ export default function AdminDashboardOverview() {
     { title: 'Bug Reports', value: '0', icon: Bug, color: '#f43f5e' },
     { title: 'Total Games', value: '0', icon: Gamepad2, color: '#10b981' },
     { title: 'Active Polls', value: '0', icon: BarChart2, color: '#e879f9' },
+  ];
+
+  const quickActions = [
+    { label: 'Add New Game', icon: PlusCircle, href: '/admin/games' },
+    { label: 'Create News Post', icon: PlusCircle, href: '/admin/news' },
+    { label: 'Review Bug Reports', icon: Bug, href: '/admin/bug-reports' },
+    { label: 'Manage Downloads', icon: DownloadCloud, href: '/admin/downloads' },
+    { label: 'Moderate Reviews', icon: MessageSquare, href: '/admin/reviews' },
   ];
 
   return (
@@ -40,7 +49,7 @@ export default function AdminDashboardOverview() {
         </div>
       </div>
 
-      {/* Statistics Section using Home.css stats-grid */}
+      {/* Statistics Section */}
       <div className="stats-grid" style={{ marginBottom: '40px' }}>
         {stats.map((stat, idx) => (
           <div key={idx} className="stat-card glass-panel" style={{ padding: '20px', textAlign: 'left' }}>
@@ -54,10 +63,10 @@ export default function AdminDashboardOverview() {
       </div>
 
       {/* Main Content Area */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
         
         {/* Recent Activity Feed */}
-        <div className="glass-panel" style={{ padding: '30px', gridColumn: '1 / -2' }}>
+        <div className="glass-panel" style={{ padding: '30px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
             <Activity color="var(--color-accent-cyan)" size={24} />
             <h3 style={{ margin: 0, fontSize: '1.5rem' }}>Recent Activities</h3>
@@ -73,16 +82,18 @@ export default function AdminDashboardOverview() {
         {/* Quick Actions */}
         <div className="glass-panel" style={{ padding: '30px' }}>
           <h3 style={{ margin: '0 0 20px 0', fontSize: '1.5rem' }}>Quick Actions</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <button className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', justifyContent: 'flex-start' }}>
-              <PlusCircle size={18} /> Add New Game
-            </button>
-            <button className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', justifyContent: 'flex-start' }}>
-              <PlusCircle size={18} /> Create News Post
-            </button>
-            <button className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', justifyContent: 'flex-start' }}>
-              <Bug size={18} /> Review Bug Reports
-            </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {quickActions.map((action, idx) => (
+              <Link key={idx} href={action.href} style={{ textDecoration: 'none' }}>
+                <button className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', justifyContent: 'space-between', cursor: 'pointer' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <action.icon size={18} />
+                    {action.label}
+                  </span>
+                  <ArrowRight size={16} color="var(--color-text-secondary)" />
+                </button>
+              </Link>
+            ))}
           </div>
         </div>
 

@@ -72,6 +72,14 @@ export default function AdminGamesPage() {
                 </td>
               </tr>
             ))}
+
+            {games.length === 0 && (
+              <tr>
+                <td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+                  No games published yet. Click "Add New Game" to get started.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
